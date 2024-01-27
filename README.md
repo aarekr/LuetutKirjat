@@ -1,2 +1,2 @@
-# Luetut Kirjat
+# Luetut kirjat
 Vuoden aikana luettujen kirjojen lista

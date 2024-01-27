@@ -1,2 +1,25 @@
 <title>Etusivu</title>
 <h1>Luetut kirjat 2024</h1>
+<hr>
+
+<h4>Luetut:</h4>
+<ol type="1">
+    {% for id, data in book_list.items() %}
+        {% if data["completed"] == True %}
+            <li>{{ data["author"] }}: {{ data["title"] }}</li>
+        {% endif %}
+    {% endfor %}
+</ol>
+<hr>
+
+<h4>Lukematta:</h4>
+<ul>
+    {% for id, data in book_list.items() %}
+        {% if data["completed"] == False %}
+            <li>{{ data["author"] }}: {{ data["title"] }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+<hr>
+
+<a href="/addbook">Lisää uusi kirja luettaviin</a>
