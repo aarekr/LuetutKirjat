@@ -22,6 +22,12 @@ def book_added():
     title = request.form["title"]
     print("author:", author)
     print("title :", title)
+    address = "/book" + str(book_id)
     all_books_list[book_id] = {"author": author, "title": title, "completed": False}
     book_id += 1
     return render_template("bookaddedtolist.html", author=author, title=title)
+
+@app.route("/book/<int:id>")
+def book_info(id):
+    book = all_books_list[int(id)]
+    return render_template("bookinfo.html", book=book)
