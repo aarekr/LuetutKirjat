@@ -25,14 +25,12 @@ def add_book():
 
 @app.route("/bookadded", methods=["POST"])
 def book_added():
-    global book_id
     author = request.form["author"]
     title = request.form["title"]
-    print("author:", author)
-    print("title :", title)
-    address = "/book" + str(book_id)
-    all_books_list[book_id] = {"author": author, "title": title, "completed": False}
-    book_id += 1
+    completed = False
+    sql = text("INSERT INTO lkbookstesti (author, title, completed) VALUES (:author, :title, :completed)")
+    db.session.execute(sql, {"author":author, "title":title, "completed":completed})
+    db.session.commit()
     return render_template("bookaddedtolist.html", author=author, title=title)
 
 @app.route("/book/<int:id>")
