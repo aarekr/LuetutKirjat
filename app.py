@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import text
+from os import getenv
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
 
 all_books_list = {}
 all_books_list[1] = {"author": "Juhani Aho", "title": "Rautatie", "completed": True}
@@ -9,7 +15,9 @@ book_id = 3
 
 @app.route("/")
 def index():
-    return render_template("index.html", book_list=all_books_list)
+    result = db.session.execute(text("SELECT * FROM lkbookstesti"))
+    db_books = result.fetchall()
+    return render_template("index.html", book_list=all_books_list, db_books=db_books)
 
 @app.route("/addbook")
 def add_book():
