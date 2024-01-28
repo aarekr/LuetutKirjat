@@ -8,16 +8,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
-all_books_list = {}
-all_books_list[1] = {"author": "Juhani Aho", "title": "Rautatie", "completed": True}
-all_books_list[2] = {"author": "Mika Ruohonen", "title": "Tietoturva", "completed": False}
-book_id = 3
-
 @app.route("/")
 def index():
     result = db.session.execute(text("SELECT * FROM lkbookstesti"))
     db_books = result.fetchall()
-    return render_template("index.html", book_list=all_books_list, db_books=db_books)
+    return render_template("index.html", db_books=db_books)
 
 @app.route("/addbook")
 def add_book():
@@ -35,5 +30,7 @@ def book_added():
 
 @app.route("/book/<int:id>")
 def book_info(id):
-    book = all_books_list[int(id)]
+    sql = text("SELECT * FROM lkbookstesti WHERE id=:id")
+    result = db.session.execute(sql, {"id":id})
+    book = result.fetchall()[0]
     return render_template("bookinfo.html", book=book)

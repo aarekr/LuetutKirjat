@@ -1,5 +1,5 @@
 <h3>Kirjan tiedot</h3>
 
-Kirjailja: {{ book["author"] }} <br>
-Nimeke: {{ book["title"] }}  <br>
-Luettu: {% if book["completed"] == True %} Kyllä {% else %} Ei {% endif %}
+Kirjailja: {{ book.author }} <br>
+Nimeke: {{ book.title }}  <br>
+Luettu: {% if book.completed == True %} Kyllä {% else %} Ei {% endif %}
