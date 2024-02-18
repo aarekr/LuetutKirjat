@@ -19,7 +19,12 @@
 <ul>
     {% for book in db_books %}
         {% if book.completed == False %}
-            <li>{{ book.author }}: {{ book.title }}</li>
+            <li>
+                <form action="/bookcompleted" method="POST">
+                    {{ book.author }}: {{ book.title }} 
+                    <input type="submit" value="Merkkaa luetuksi">
+                </form>
+            </li>
         {% endif %}
     {% endfor %}
 </ul>
