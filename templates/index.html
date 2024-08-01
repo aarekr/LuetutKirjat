@@ -1,30 +1,49 @@
-<title>Etusivu</title>
-<h1>Luetut kirjat 2024</h1>
-<hr>
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<title>Luetut kirjat</title>
 
-<a href="/addbook">Lisää uusi kirja luettaviin</a>
-<hr>
-
-<h4>Luetut:</h4>
-<ol type="1">
-    {% for book in db_books %}
-        {% if book.completed == True %}
-            <li>{{ book.author }}: {{ book.title }}</li>
-        {% endif %}
-    {% endfor %}
-</ol>
-<hr>
-
-<h4>Lukematta:</h4>
-<ul>
-    {% for book in db_books %}
-        {% if book.completed == False %}
-            <li>
-                <form action="/bookcompleted" method="POST">
-                    {{ book.author }}: {{ book.title }} 
-                    <input type="submit" value="Merkkaa luetuksi">
-                </form>
-            </li>
-        {% endif %}
-    {% endfor %}
-</ul>
+<div class="container">
+    <nav class="navbar navbar-expand-sm navbar-light">
+        <a class="navbar-brand" href="#">Luetut kirjat</a>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/index">Etusivu</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/bookinfo">Kirjainfo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/addbook">Lisää kirja</a>
+          </li>
+        </ul>
+      </nav>
+    <div class="row">
+      <div class="col-6">
+        <h4>Lukematta</h4>
+        <ul>
+            {% for book in db_books %}
+                {% if book.completed == False %}
+                    <li>
+                        <form action="/bookcompleted" method="POST">
+                            {{ book.title }}: {{ book.author }} 
+                            <input type="submit" value="Merkkaa luetuksi">
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <a href="/addbook">Lisää uusi kirja luettaviin</a>
+      </div>
+      <div class="col-6">
+        <h4>Luetut</h4>
+        <ol type="1">
+            {% for book in db_books %}
+                {% if book.completed == True %}
+                    <li>{{ book.title }}: {{ book.author }}</li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+      </div>
+    </div>
+</div>

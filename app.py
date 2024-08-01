@@ -40,7 +40,7 @@ def book_completed():
     id = 2
     print("book_completed funktio, book_id:", id)
     completed = True
-    sql = text("UPDATE lkbooks SET completed='True' WHERE id=:id")
+    sql = text("UPDATE lkbooks SET completed=True WHERE id=:id")
     db.session.execute(sql, {"id":id})
     db.session.commit()
     return render_template("bookcompleted.html")
