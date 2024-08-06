@@ -25,9 +25,10 @@
             {% for book in db_books %}
                 {% if book.completed == False %}
                     <li>
-                        <form action="/bookcompleted" method="POST">
+                        <form action="/bookcompleted/{{ book.id }}" method="POST">
                             {{ book.title }}: {{ book.author }} 
                             <input type="submit" value="Merkkaa luetuksi">
+                            <input type="hidden" name="id" value="{{ book.id }}">
                         </form>
                     </li>
                 {% endif %}
@@ -40,7 +41,12 @@
         <ol type="1">
             {% for book in db_books %}
                 {% if book.completed == True %}
-                    <li>{{ book.title }}: {{ book.author }}</li>
+                    <li>
+                      <form action="/book/{{ book.id }}" method="GET">
+                        <input type="submit" value="Info"> {{ book.title }}: {{ book.author }}
+                        <input type="hidden" name="id" value="{{ book.id }}">
+                      </form>
+                    </li>
                 {% endif %}
             {% endfor %}
         </ol>

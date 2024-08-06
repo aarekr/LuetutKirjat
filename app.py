@@ -14,10 +14,12 @@ def index():
     db_books = result.fetchall()
     return render_template("index.html", db_books=db_books)
 
+# form for adding a new book to the reading list
 @app.route("/addbook")
 def add_book():
     return render_template("formaddbook.html")
 
+# adding a new book to the reading list and confirming it
 @app.route("/bookadded", methods=["POST"])
 def book_added():
     author = request.form["author"]
@@ -28,19 +30,18 @@ def book_added():
     db.session.commit()
     return render_template("bookaddedtolist.html", author=author, title=title)
 
-@app.route("/book/<int:book_id>")
-def book_info(book_id):
+# book info page displaying details
+@app.route("/book/<int:id>")
+def book_info(id):
     sql = text("SELECT * FROM lkbooks WHERE id=:id")
-    result = db.session.execute(sql, {"id":book_id})
+    result = db.session.execute(sql, {"id":id})
     book = result.fetchall()[0]
     return render_template("bookinfo.html", book=book)
 
-@app.route("/bookcompleted", methods=["POST"])
-def book_completed():
-    id = 2
-    print("book_completed funktio, book_id:", id)
-    completed = True
+@app.route("/bookcompleted/<int:id>", methods=["POST"])
+def book_completed(id):
+    #book_id = request.form["id"]
     sql = text("UPDATE lkbooks SET completed=True WHERE id=:id")
     db.session.execute(sql, {"id":id})
     db.session.commit()
-    return render_template("bookcompleted.html")
+    return render_template("index.html")
