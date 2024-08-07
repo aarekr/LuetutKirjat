@@ -3,7 +3,10 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 <title>Luetut kirjat</title>
 
-<div class="container">
+{% if session.username %}
+  <p>Olet kirjautunut nimellä {{ session.username }}</p>
+  <a href="/logout">Kirjaudu ulos</a>
+  <div class="container">
     <nav class="navbar navbar-expand-sm navbar-light">
         <a class="navbar-brand" href="#">Luetut kirjat</a>
         <ul class="navbar-nav">
@@ -52,4 +55,13 @@
         </ol>
       </div>
     </div>
-</div>
+  </div>
+  {% else %}
+  <form action="/login" method="POST">
+  <p>Tunnus:<br>
+  <input type="text" name="username"></p>
+  <p>Salasana:<br>
+  <input type="password" name="password"></p>
+  <input type="submit" value="Kirjaudu">
+  </form>
+{% endif %}
