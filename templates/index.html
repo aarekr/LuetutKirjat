@@ -4,54 +4,66 @@
 <title>Luetut kirjat</title>
 
 {% if session.username %}
-  <p>Olet kirjautunut nimellä {{ session.username }}</p>
-  <a href="/logout">Kirjaudu ulos</a>
   <div class="container">
     <nav class="navbar navbar-expand-sm navbar-light">
-        <a class="navbar-brand" href="#">Luetut kirjat</a>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/index">Etusivu</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/bookinfo">Kirjainfo</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/addbook">Lisää kirja</a>
-          </li>
-        </ul>
-      </nav>
+      <a class="navbar-brand">Hei, {{ session.username }}</a>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/index">Etusivu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/addbook">Lisää kirja</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Kirjaudu ulos</a>
+        </li>
+      </ul>
+    </nav>
     <div class="row">
       <div class="col-6">
-        <h4>Lukematta</h4>
+        <h5>Lukeminen aloitettu</h5>
         <ul>
-            {% for book in db_books %}
-                {% if book.completed == False %}
-                    <li>
-                        <form action="/bookcompleted/{{ book.id }}" method="POST">
-                            {{ book.title }}: {{ book.author }} 
-                            <input type="submit" value="Merkkaa luetuksi">
-                            <input type="hidden" name="id" value="{{ book.id }}">
-                        </form>
-                    </li>
-                {% endif %}
-            {% endfor %}
+          {% for book in db_books %}
+            {% if book.reading_started == True %}
+              <li>
+                <form action="/bookcompleted/{{ book.id }}" method="POST">
+                  <input type="submit" value="Luettu"> {{ book.title }}, {{ book.author }}
+                  <input type="hidden" name="id" value="{{ book.id }}">
+                </form>
+              </li>
+            {% endif %}
+          {% endfor %}
         </ul>
+        <hr>
+        <h5>Lukematta</h5>
+        <ul>
+          {% for book in db_books %}
+            {% if book.reading_started == False and book.reading_completed == False %}
+              <li>
+                <form action="/bookstarted/{{ book.id }}" method="POST">
+                  <input type="submit" value="Aloita"> {{ book.title }}, {{ book.author }}
+                  <input type="hidden" name="id" value="{{ book.id }}">
+                </form>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        <hr>
         <a href="/addbook">Lisää uusi kirja luettaviin</a>
       </div>
       <div class="col-6">
-        <h4>Luetut</h4>
+        <h5>Luetut kirjat</h5>
         <ol type="1">
-            {% for book in db_books %}
-                {% if book.completed == True %}
-                    <li>
-                      <form action="/book/{{ book.id }}" method="GET">
-                        <input type="submit" value="Info"> {{ book.title }}: {{ book.author }}
-                        <input type="hidden" name="id" value="{{ book.id }}">
-                      </form>
-                    </li>
-                {% endif %}
-            {% endfor %}
+          {% for book in db_books %}
+            {% if book.reading_completed == True %}
+              <li>
+                <form action="/bookinfo/{{ book.id }}" method="GET">
+                  <input type="submit" value="Info"> {{ book.title }}, {{ book.author }}
+                  <input type="hidden" name="id" value="{{ book.id }}">
+                </form>
+              </li>
+            {% endif %}
+          {% endfor %}
         </ol>
       </div>
     </div>

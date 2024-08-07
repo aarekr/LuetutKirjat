@@ -37,26 +37,38 @@ def add_book():
 # adding a new book to the reading list and confirming it
 @app.route("/bookadded", methods=["POST"])
 def book_added():
-    author = request.form["author"]
     title = request.form["title"]
-    completed = False
-    sql = text("INSERT INTO lkbooks (author, title, completed) VALUES (:author, :title, :completed)")
-    db.session.execute(sql, {"author":author, "title":title, "completed":completed})
+    author = request.form["author"]
+    reading_started = False
+    reading_completed = False
+    stars = 0
+    sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, stars) \
+               VALUES (:title, :author, :reading_started, :reading_completed, :stars)")
+    db.session.execute(sql, {"title":title, "author":author, "reading_started":reading_started, \
+                             "reading_completed":reading_completed, "stars":stars})
     db.session.commit()
-    return render_template("bookaddedtolist.html", author=author, title=title)
+    return render_template("bookaddedtolist.html", title=title, author=author)
 
 # book info page displaying details
-@app.route("/book/<int:id>")
+@app.route("/bookinfo/<int:id>")
 def book_info(id):
     sql = text("SELECT * FROM lkbooks WHERE id=:id")
     result = db.session.execute(sql, {"id":id})
     book = result.fetchall()[0]
     return render_template("bookinfo.html", book=book)
 
-@app.route("/bookcompleted/<int:id>", methods=["POST"])
-def book_completed(id):
-    #book_id = request.form["id"]
-    sql = text("UPDATE lkbooks SET completed=True WHERE id=:id")
+# mark book as reading started
+@app.route("/bookstarted/<int:id>", methods=["POST"])
+def book_started(id):
+    sql = text("UPDATE lkbooks SET reading_started=True WHERE id=:id")
     db.session.execute(sql, {"id":id})
     db.session.commit()
-    return render_template("index.html")
+    return redirect("/")
+
+# mark book as reading completed
+@app.route("/bookcompleted/<int:id>", methods=["POST"])
+def book_completed(id):
+    sql = text("UPDATE lkbooks SET reading_started=False, reading_completed=True WHERE id=:id")
+    db.session.execute(sql, {"id":id})
+    db.session.commit()
+    return redirect("/")

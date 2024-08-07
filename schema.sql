@@ -1,6 +1,8 @@
 CREATE TABLE lkbooks (
     id SERIAL PRIMARY KEY,
-    author TEXT,
     title TEXT,
-    completed BOOLEAN
+    author TEXT,
+    reading_started BOOLEAN,
+    reading_completed BOOLEAN,
+    stars INTEGER
 );
