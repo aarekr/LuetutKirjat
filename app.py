@@ -41,11 +41,12 @@ def book_added():
     author = request.form["author"]
     reading_started = False
     reading_completed = False
+    book_language = request.form["book_language"]
     stars = 0
-    sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, stars) \
-               VALUES (:title, :author, :reading_started, :reading_completed, :stars)")
+    sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, book_language, stars) \
+               VALUES (:title, :author, :reading_started, :reading_completed, :book_language, :stars)")
     db.session.execute(sql, {"title":title, "author":author, "reading_started":reading_started, \
-                             "reading_completed":reading_completed, "stars":stars})
+                             "reading_completed":reading_completed, "book_language":book_language, "stars":stars})
     db.session.commit()
     return render_template("bookaddedtolist.html", title=title, author=author)
 

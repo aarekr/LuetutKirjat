@@ -1,8 +1,10 @@
 <h3>Kirjan tiedot</h3>
 
-Kirjailja: {{ book.author }} <br>
 Nimeke: {{ book.title }}  <br>
-Luettu: {% if book.reading_completed == True %} Kyllä {% else %} Ei {% endif %}
+Kirjailja: {{ book.author }} <br>
+Luettu: {% if book.reading_completed == True %} Kyllä {% else %} Ei {% endif %} <br>
+Kieli: {{ book.book_language }} <br>
+Tähtiä:  <br>
 
 <br><br>
 <a href="/">Etusivulle</a>
