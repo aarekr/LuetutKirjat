@@ -1,2 +1,6 @@
 # Luetut kirjat
-Vuoden aikana luettujen kirjojen lista
+
+Sovellus, johon voi merkata tällä hetkellä luettavat, lukulistalla olevat ja luetut kirjat.
+
+Ohjelmointikieli: Python Flask
+Tietokanta: PostgreSQL
