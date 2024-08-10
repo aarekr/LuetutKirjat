@@ -20,22 +20,35 @@ def register():
         return render_template("register.html")
     if request.method == "POST":
         username = request.form["username"]
-        password1 = request.form["password1"]
-        password2 = request.form["password2"]
-        print("routes POST: ", username, password1)
-        if password1 != password2:
+        password_1 = request.form["password_1"]
+        password_2 = request.form["password_2"]
+        print("routes POST: ", username, password_1)
+        if password_1 != password_2:
             return render_template("error.html", message="Salasanat eroavat")
-        if users.register(username, password1):
+        if users.register(username, password_1):
             return redirect("/")
         else:
             return render_template("error.html", message="Rekisteröinti ei onnistunut")
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
     # TODO: check username and password
+    print("routes login: ", username, password)
     session["username"] = username
+    #return redirect("/")
+    print("routes login request.method: ", request.method)
+    if request.method == "GET":
+        return render_template("login.html")
+    '''if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        print("routes login: ", username, password)
+        if users.login(username, password):
+            return redirect("/")
+        else:
+            return render_template("error.html", message="Väärä tunnus tai salasana")'''
     return redirect("/")
 
 @app.route("/logout")
@@ -71,6 +84,14 @@ def book_info(id):
     result = db.session.execute(sql, {"id":id})
     book = result.fetchall()[0]
     return render_template("bookinfo.html", book=book)
+
+@app.route("/givestars/<int:id>", methods=["POST"])
+def give_stars(id):
+    stars = request.form["stars"]
+    sql = text("UPDATE lkbooks SET stars=:stars WHERE id=:id")
+    db.session.execute(sql, {"id":id, "stars":stars})
+    db.session.commit()
+    return redirect("/")
 
 # mark book as reading started
 @app.route("/bookstarted/<int:id>", methods=["POST"])

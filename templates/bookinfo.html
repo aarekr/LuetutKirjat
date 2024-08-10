@@ -4,7 +4,20 @@ Nimeke: {{ book.title }}  <br>
 Kirjailja: {{ book.author }} <br>
 Luettu: {% if book.reading_completed == True %} Kyllä {% else %} Ei {% endif %} <br>
 Kieli: {{ book.book_language }} <br>
-Tähtiä:  <br>
+Tähtiä:
+    {% if book.stars == 0 %}
+        Arvostelu puuttuu. Voit lisätä sen alapuolella:
+        <form action="/givestars/{{ book.id }}" method="POST">
+            <input type="radio" name="stars" value="1">1
+            <input type="radio" name="stars" value="2">2
+            <input type="radio" name="stars" value="3">3
+            <input type="radio" name="stars" value="4">4
+            <input type="radio" name="stars" value="5">5        
+            <input type="submit" value="Lisää arvostelu">
+        </form>
+    {% else %}
+        {{ book.stars }}
+    {% endif %}
 
-<br><br>
-<a href="/">Etusivulle</a>
+<br>
+<a href="/">Palaa etusivulle</a>

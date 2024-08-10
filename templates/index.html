@@ -20,7 +20,7 @@
       </ul>
     </nav>
     <div class="row">
-      <div class="col-6">
+      <div class="col-5">
         <h5>Lukeminen aloitettu</h5>
         <ul>
           {% for book in db_books %}
@@ -51,14 +51,21 @@
         <hr>
         <a href="/addbook">Lisää uusi kirja luettaviin</a>
       </div>
-      <div class="col-6">
+      <div class="col-7">
         <h5>Luetut kirjat</h5>
         <ol type="1">
           {% for book in db_books %}
             {% if book.reading_completed == True %}
               <li>
                 <form action="/bookinfo/{{ book.id }}" method="GET">
-                  <input type="submit" value="Info"> {{ book.title }}, {{ book.author }} ({{ book.book_language }})
+                  <input type="submit" value="Info"> {{ book.title }}, {{ book.author }} ( {{ book.book_language }},
+                                                      {% if book.stars > 1 %}
+                                                        {{ book.stars }} tähteä
+                                                      {% elif book.stars == 1 %}
+                                                        {{ book.stars }} tähti
+                                                      {% else %}
+                                                        ei arvosteltu
+                                                      {% endif %})
                   <input type="hidden" name="id" value="{{ book.id }}">
                 </form>
               </li>
