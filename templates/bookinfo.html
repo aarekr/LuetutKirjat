@@ -1,23 +1,43 @@
 <h3>Kirjan tiedot</h3>
+<table border="1">
+    <tr>
+        <td>Nimeke</td>
+        <td>{{ book.title }}</td>
+    </tr>
+    <tr>
+        <td>Kirjailja</td>
+        <td>{{ book.author }}</td>
+    </tr>
+    <tr>
+        <td>Luettu</td>
+        <td>{% if book.reading_completed == True %} Kyllä {% else %} Ei {% endif %}</td>
+    </tr>
+    <tr>
+        <td>Kieli</td>
+        <td>{{ book.book_language }}</td>
+    </tr>
+    <tr>
+        <td>Tähtiä</td>
+        <td>{% if book.stars == 0 %} Arvostelu puuttuu {% else %} {{ book.stars }} {% endif %}</td>
+    </tr>
+</table>
 
-Nimeke: {{ book.title }}  <br>
-Kirjailja: {{ book.author }} <br>
-Luettu: {% if book.reading_completed == True %} Kyllä {% else %} Ei {% endif %} <br>
-Kieli: {{ book.book_language }} <br>
-Tähtiä:
-    {% if book.stars == 0 %}
-        Arvostelu puuttuu. Voit lisätä sen alapuolella:
-        <form action="/givestars/{{ book.id }}" method="POST">
-            <input type="radio" name="stars" value="1">1
-            <input type="radio" name="stars" value="2">2
-            <input type="radio" name="stars" value="3">3
-            <input type="radio" name="stars" value="4">4
-            <input type="radio" name="stars" value="5">5        
-            <input type="submit" value="Lisää arvostelu">
-        </form>
-    {% else %}
-        {{ book.stars }}
-    {% endif %}
+<br>
+{% if book.stars == 0 %}
+    Arvostele kirja:
+    <form action="/givestars/{{ book.id }}" method="POST">
+        <input type="radio" name="stars" value="1">1
+        <input type="radio" name="stars" value="2">2
+        <input type="radio" name="stars" value="3">3
+        <input type="radio" name="stars" value="4">4
+        <input type="radio" name="stars" value="5">5        
+        <input type="submit" value="Lisää arvostelu">
+    </form>
+{% endif %}
 
+<form action="/removebook/{{ book.id }}" method="POST">     
+    <input type="submit" value="Poista kirja">
+</form>
+<hr>
 <br>
 <a href="/">Palaa etusivulle</a>

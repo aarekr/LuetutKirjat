@@ -1,11 +1,20 @@
 <form action="/bookadded" method="POST">
     <h3>Anna kirjan tiedot:</h3>
-    Nimeke: <input type="text" name="title"> <br>
-    Kirjailja: <input type="text" name="author"> <br>
-    Kieli: <input type="text" name="book_language"> <br><br>
-
+    <table>
+        <tr>
+            <td>Nimeke</td>
+            <td><input type="text" name="title"></td>
+        </tr>
+        <tr>
+            <td>Kirjailja</td>
+            <td><input type="text" name="author"></td>
+        </tr>
+        <tr>
+            <td>Kieli</td>
+            <td><input type="text" name="book_language"></td>
+        </tr>
+    </table>
     <input type="submit" value="Lisää kirja luettaviin">
-
-    <br /><br />
+    <hr>
     <a href="/">Palaa etusivulle</a>
 </form>

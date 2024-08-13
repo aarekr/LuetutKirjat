@@ -5,5 +5,6 @@ CREATE TABLE lkbooks (
     reading_started BOOLEAN,
     reading_completed BOOLEAN,
     book_language TEXT,
-    stars INTEGER
+    stars INTEGER,
+    visible BOOLEAN
 );

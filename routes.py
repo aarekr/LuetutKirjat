@@ -13,6 +13,7 @@ def index():
     db_books = result.fetchall()
     return render_template("index.html", db_books=db_books)
 
+# register, login, logout
 @app.route("/register", methods=["GET", "POST"])
 def register():
     print("routes register")
@@ -56,6 +57,7 @@ def logout():
     del session["username"]
     return redirect("/")
 
+
 # form for adding a new book to the reading list
 @app.route("/addbook")
 def add_book():
@@ -70,10 +72,12 @@ def book_added():
     reading_completed = False
     book_language = request.form["book_language"]
     stars = 0
-    sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, book_language, stars) \
-               VALUES (:title, :author, :reading_started, :reading_completed, :book_language, :stars)")
+    visible = True
+    sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, book_language, stars, visible) \
+               VALUES (:title, :author, :reading_started, :reading_completed, :book_language, :stars, :visible)")
     db.session.execute(sql, {"title":title, "author":author, "reading_started":reading_started, \
-                             "reading_completed":reading_completed, "book_language":book_language, "stars":stars})
+                             "reading_completed":reading_completed, "book_language":book_language, \
+                             "stars":stars, "visible":visible})
     db.session.commit()
     return render_template("bookaddedtolist.html", title=title, author=author)
 
@@ -87,11 +91,16 @@ def book_info(id):
 
 @app.route("/givestars/<int:id>", methods=["POST"])
 def give_stars(id):
-    stars = request.form["stars"]
-    sql = text("UPDATE lkbooks SET stars=:stars WHERE id=:id")
-    db.session.execute(sql, {"id":id, "stars":stars})
-    db.session.commit()
-    return redirect("/")
+    try:
+        stars = request.form["stars"]
+        sql = text("UPDATE lkbooks SET stars=:stars WHERE id=:id")
+        db.session.execute(sql, {"id":id, "stars":stars})
+        db.session.commit()
+        return redirect("/")
+    except:
+        address = "/bookinfo/" + str(id) + "?id=" + str(id)
+        # add notification here
+        return redirect(address)
 
 # mark book as reading started
 @app.route("/bookstarted/<int:id>", methods=["POST"])
@@ -106,5 +115,14 @@ def book_started(id):
 def book_completed(id):
     sql = text("UPDATE lkbooks SET reading_started=False, reading_completed=True WHERE id=:id")
     db.session.execute(sql, {"id":id})
+    db.session.commit()
+    return redirect("/")
+
+# removing/hiding a book from the list
+@app.route("/removebook/<int:id>", methods=["POST"])
+def remove_book(id):
+    visible = False
+    sql = text("UPDATE lkbooks SET visible=:visible WHERE id=:id")
+    db.session.execute(sql, {"id":id, "visible":visible})
     db.session.commit()
     return redirect("/")
