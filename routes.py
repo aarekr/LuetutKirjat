@@ -126,3 +126,20 @@ def remove_book(id):
     db.session.execute(sql, {"id":id, "visible":visible})
     db.session.commit()
     return redirect("/")
+
+# search book main page
+@app.route("/searchbook")
+def search_book():
+    return render_template("searchbookmainpage.html")
+
+# searhing a book by author name
+@app.route("/searchauthor")
+def search_author():
+    query = request.args["query"]
+    # handle uppercase and lowercase
+    sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars \
+                FROM lkbooks WHERE author LIKE :query")
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    searched_books = result.fetchall()
+    count=len(searched_books)
+    return render_template("searchedbooks.html", searched_books=searched_books, count=count)

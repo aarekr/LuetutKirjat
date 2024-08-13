@@ -15,12 +15,20 @@
           <a class="nav-link" href="/addbook">Lisää kirja</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="/searchbook">Hae kirjaa</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/logout">Kirjaudu ulos</a>
         </li>
       </ul>
     </nav>
     <div class="row">
       <div class="col-5">
+        <form action="/searchauthor" method="GET">
+          Hae kirjailijan perusteella: 
+          <input type="text" name="query"><input type="submit" value="Hae">
+        </form>
+        <hr>
         <h5>Lukeminen aloitettu</h5>
         <ul>
           {% for book in db_books %}
