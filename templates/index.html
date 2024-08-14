@@ -22,13 +22,14 @@
         </li>
       </ul>
     </nav>
+    <hr>
+    <form action="/searchauthor" method="GET">
+      Hae kirjailijan perusteella: 
+      <input type="text" name="query"><input type="submit" value="Hae">
+    </form>
+    <hr>
     <div class="row">
       <div class="col-5">
-        <form action="/searchauthor" method="GET">
-          Hae kirjailijan perusteella: 
-          <input type="text" name="query"><input type="submit" value="Hae">
-        </form>
-        <hr>
         <h5>Lukeminen aloitettu</h5>
         <ul>
           {% for book in db_books %}
@@ -91,4 +92,6 @@
     <input type="password" name="password"></p>
     <input type="submit" value="Kirjaudu">
   </form>
+  <br>
+  <p>Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">täällä</a></p>
 {% endif %}
