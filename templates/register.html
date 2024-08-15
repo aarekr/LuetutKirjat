@@ -1,6 +1,6 @@
 <h3>Uuden käyttäjätilin rekisteröinti</h3>
 
-<form action="/register" method="POST">
+<form action="/register" method="POST" onsubmit="return check(this)">
     Käyttäjätunnus: <input type="text" name="username"> <br>
     Salasana: <input type="password" name="password_1" placeholder="Salasana"> <br>
     Salasana: <input type="password" name="password_2" placeholder="Salasana uudelleen"> <br><br>
@@ -10,3 +10,17 @@
     <br /><br />
     <a href="/">Palaa etusivulle</a>
 </form>
+
+<script>
+    function check(form) {
+        if (form.username.value.length > 10) {
+            alert('Käyttäjätunnuksen maksimipituus on 10 merkkiä');
+            return false;
+        }
+        if (form.password_1.value.length > 20) {
+            alert('Salasanan maksimipituus on 20 merkkiä');
+            return false;
+        }
+        return true;
+    }
+</script>

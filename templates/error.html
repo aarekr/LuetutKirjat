@@ -1,4 +1,9 @@
 {{ message }}
 
 <br><br>
+{% if return_to_page == 'registration' %}
+    <a href="/register">Palaa rekisteröintisivulle</a>
+    <br><br>
+{% endif %}
+
 <a href="/">Palaa etusivulle</a>

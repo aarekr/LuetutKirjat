@@ -25,12 +25,20 @@ def register():
         username = request.form["username"]
         password_1 = request.form["password_1"]
         password_2 = request.form["password_2"]
+        if len(username) > 10:
+            return render_template("error.html", return_to_page="registration",
+                                   message="Käyttäjätunnuksen maksimipituus on 10 merkkiä")
+        if len(password_1) > 20:
+            return render_template("error.html", return_to_page="registration",
+                                   message="Salasanan maksimipituus on 20 merkkiä")
         if password_1 != password_2:
-            return render_template("error.html", message="Salasanat eroavat")
+            return render_template("error.html", return_to_page="registration",
+                                   message="Salasanat eroavat")
         if users.register(username, password_1):
             return redirect("/")
         else:
-            return render_template("error.html", message="Rekisteröinti ei onnistunut")
+            return render_template("error.html", return_to_page="registration",
+                                   message="Rekisteröinti ei onnistunut")
     return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
