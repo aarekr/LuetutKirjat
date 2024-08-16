@@ -35,6 +35,13 @@ def user_id():
     ''' User session id '''
     return session.get("user_id", 0)
 
+def user_name(id):
+    ''' User name by id '''
+    sql = text("SELECT id, username FROM lkusers WHERE id=:id")
+    result = db.session.execute(sql, {"id":id})
+    user = result.fetchone()
+    return user[1]
+
 def logout():
     ''' User logout '''
     del session["username"]

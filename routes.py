@@ -137,6 +137,7 @@ def book_completed(id):
 @app.route("/removebook/<int:id>", methods=["POST"])
 def remove_book(id):
     ''' Deleting/hiding books from the read books list '''
+    # the book should be removed from the readers list
     visible = False
     sql = text("UPDATE lkbooks SET visible=:visible WHERE id=:id")
     db.session.execute(sql, {"id":id, "visible":visible})
@@ -161,3 +162,26 @@ def search_author():
     searched_books = result.fetchall()
     count=len(searched_books)
     return render_template("searchedbooks.html", searched_books=searched_books, count=count)
+
+# statistics: overview of what all users have read
+@app.route("/statistics")
+def get_stats():
+    ''' Showing statistics of read books by all users '''
+    result_books = db.session.execute(text("SELECT * FROM lkbooks"))
+    db_books = result_books.fetchall()
+    result_users = db.session.execute(text("SELECT id, username FROM lkusers"))
+    book_dict = {}
+    for book in db_books:
+        if book.title not in book_dict:
+            book_dict[book.title] = {"id": [], "readers": "", "readers_count": 0}
+        book_dict[book.title]["id"].append(book.user_id)
+        if len(book_dict[book.title]["readers"]) == 0:
+            book_dict[book.title]["readers"] += users.user_name(book.user_id)
+        else:
+            book_dict[book.title]["readers"] += ", " + users.user_name(book.user_id)
+        book_dict[book.title]["author"] = book.author
+        book_dict[book.title]["readers_count"] += 1
+    db_users = result_users.fetchall()
+    current_user = users.user_id()
+    return render_template("statistics.html", db_books=db_books, book_dict=book_dict,
+                           db_users=db_users, current_user=current_user)
