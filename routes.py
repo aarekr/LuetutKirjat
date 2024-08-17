@@ -104,7 +104,7 @@ def book_info(id):
     books_all = result_all.fetchall()
     readers_count = 0
     for item in books_all:
-        if item.title == book.title:
+        if item.title == book.title and item.visible == True:
             readers_count += 1
     return render_template("bookinfo.html", book=book, readers_count=readers_count)
 
@@ -189,12 +189,21 @@ def get_stats():
         if book.visible == False:
             continue
         if book.title not in all_books:
-            all_books[book.title] = {"id": [], "readers": "", "readers_count": 0}
+            all_books[book.title] = {"readers": "", "readers_count": 0,
+                                     "stars_total": 0, "ratings_total": 0, "average_rating": 0}
             all_books[book.title]["author"] = book.author
         if len(all_books[book.title]["readers"]) == 0:
             all_books[book.title]["readers"] += users.user_name(book.user_id)
         else:
             all_books[book.title]["readers"] += ", " + users.user_name(book.user_id)
         all_books[book.title]["readers_count"] += 1
+        if book.stars > 0:
+            print("book.stars:", book.stars)
+            all_books[book.title]["stars_total"] += book.stars
+            all_books[book.title]["ratings_total"] += 1
+        if all_books[book.title]["ratings_total"] != 0:
+            all_books[book.title]["average_rating"] = \
+                "{:.2f}".format(all_books[book.title]["stars_total"] / 
+                                all_books[book.title]["ratings_total"])
     return render_template("statistics.html", my_books=my_books, all_books=all_books,
                            current_user=current_user)

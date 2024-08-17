@@ -21,12 +21,14 @@
         <th>Nimeke</th>
         <th>Kirjailja</th>
         <th>Lukijat</th>
+        <th>Tähdet</th>
     </tr>
     {% for key, value in all_books.items() %}
             <tr>
                 <td>{{ key }}</td>
                 <td>{{ value.author }}</td>
                 <td>{{ value.readers_count }} kpl: {{ value.readers }}</td>
+                <td align="right">{{ value.average_rating }}</td>
             </tr>
     {% endfor %}
 </table>
