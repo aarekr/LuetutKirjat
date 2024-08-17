@@ -7,13 +7,11 @@
         <th>Nimeke</th>
         <th>Kirjailja</th>
     </tr>
-    {% for book in db_books %}
-        {% if book.user_id == current_user %}
-            <tr>
-                <td>{{ book.title }}</td>
-                <td>{{ book.author }}</td>
-            </tr>
-        {% endif %}
+    {% for key, value in my_books.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value.author }}</td>
+        </tr>
     {% endfor %}
 </table>
 
@@ -22,9 +20,9 @@
     <tr>
         <th>Nimeke</th>
         <th>Kirjailja</th>
-        <th>Lukija(t)</th>
+        <th>Lukijat</th>
     </tr>
-    {% for key, value in book_dict.items() %}
+    {% for key, value in all_books.items() %}
             <tr>
                 <td>{{ key }}</td>
                 <td>{{ value.author }}</td>

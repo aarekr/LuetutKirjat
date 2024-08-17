@@ -99,7 +99,14 @@ def book_info(id):
     sql = text("SELECT * FROM lkbooks WHERE id=:id")
     result = db.session.execute(sql, {"id":id})
     book = result.fetchall()[0]
-    return render_template("bookinfo.html", book=book)
+    sql_all = text("SELECT * FROM lkbooks")
+    result_all = db.session.execute(sql_all)
+    books_all = result_all.fetchall()
+    readers_count = 0
+    for item in books_all:
+        if item.title == book.title:
+            readers_count += 1
+    return render_template("bookinfo.html", book=book, readers_count=readers_count)
 
 @app.route("/givestars/<int:id>", methods=["POST"])
 def give_stars(id):
@@ -166,22 +173,28 @@ def search_author():
 # statistics: overview of what all users have read
 @app.route("/statistics")
 def get_stats():
-    ''' Showing statistics of read books by all users '''
+    ''' Showing statistics of all books by all users '''
+    current_user = users.user_id()
     result_books = db.session.execute(text("SELECT * FROM lkbooks"))
     db_books = result_books.fetchall()
-    result_users = db.session.execute(text("SELECT id, username FROM lkusers"))
-    book_dict = {}
+    my_books = {}
     for book in db_books:
-        if book.title not in book_dict:
-            book_dict[book.title] = {"id": [], "readers": "", "readers_count": 0}
-        book_dict[book.title]["id"].append(book.user_id)
-        if len(book_dict[book.title]["readers"]) == 0:
-            book_dict[book.title]["readers"] += users.user_name(book.user_id)
+        if current_user != book.user_id:
+            continue
+        if book.title not in my_books:
+            my_books[book.title] = {}
+        my_books[book.title]["author"] = book.author
+    all_books = {}
+    for book in db_books:
+        if book.visible == False:
+            continue
+        if book.title not in all_books:
+            all_books[book.title] = {"id": [], "readers": "", "readers_count": 0}
+            all_books[book.title]["author"] = book.author
+        if len(all_books[book.title]["readers"]) == 0:
+            all_books[book.title]["readers"] += users.user_name(book.user_id)
         else:
-            book_dict[book.title]["readers"] += ", " + users.user_name(book.user_id)
-        book_dict[book.title]["author"] = book.author
-        book_dict[book.title]["readers_count"] += 1
-    db_users = result_users.fetchall()
-    current_user = users.user_id()
-    return render_template("statistics.html", db_books=db_books, book_dict=book_dict,
-                           db_users=db_users, current_user=current_user)
+            all_books[book.title]["readers"] += ", " + users.user_name(book.user_id)
+        all_books[book.title]["readers_count"] += 1
+    return render_template("statistics.html", my_books=my_books, all_books=all_books,
+                           current_user=current_user)

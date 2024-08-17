@@ -20,6 +20,10 @@
         <td>Tähtiä</td>
         <td>{% if book.stars == 0 %} Arvostelu puuttuu {% else %} {{ book.stars }} {% endif %}</td>
     </tr>
+    <tr>
+        <td>Lukijoita</td>
+        <td>{{ readers_count }}</td>
+    </tr>
 </table>
 
 <br>
