@@ -25,20 +25,13 @@ def register():
         username = request.form["username"]
         password_1 = request.form["password_1"]
         password_2 = request.form["password_2"]
-        if len(username) > 10:
-            return render_template("error.html", return_to_page="registration",
-                                   message="Käyttäjätunnuksen maksimipituus on 10 merkkiä")
-        if len(password_1) > 20:
-            return render_template("error.html", return_to_page="registration",
-                                   message="Salasanan maksimipituus on 20 merkkiä")
-        if password_1 != password_2:
-            return render_template("error.html", return_to_page="registration",
-                                   message="Salasanat eroavat")
+        message = users.check_username_and_passwords(username, password_1, password_2)
+        if message != "Password OK":
+            return render_template("error.html", return_to_page="registration", message=message)
         if users.register(username, password_1):
             return redirect("/")
-        else:
-            return render_template("error.html", return_to_page="registration",
-                                   message="Rekisteröinti ei onnistunut")
+        return render_template("error.html", return_to_page="registration",
+                               message="Rekisteröinti ei onnistunut")
     return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -51,8 +44,7 @@ def login():
         password = request.form["password"]
         if users.login(username, password):
             return redirect("/")
-        else:
-            return render_template("error.html", message="Väärä tunnus tai salasana")
+        return render_template("error.html", message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
@@ -104,7 +96,7 @@ def book_info(id):
     books_all = result_all.fetchall()
     readers_count = 0
     for item in books_all:
-        if item.title == book.title and item.visible == True:
+        if item.title == book.title and item.visible is True:
             readers_count += 1
     return render_template("bookinfo.html", book=book, readers_count=readers_count)
 
@@ -117,7 +109,7 @@ def give_stars(id):
         db.session.execute(sql, {"id":id, "stars":stars})
         db.session.commit()
         return redirect("/")
-    except:
+    except: # pylint: disable=bare-except
         address = "/bookinfo/" + str(id) + "?id=" + str(id)
         # add notification here
         return redirect(address)
@@ -162,7 +154,6 @@ def search_book():
 def search_author():
     ''' Searching books by author '''
     query = request.args["query"]
-    current_user = users.user_id()
     # handle uppercase and lowercase
     sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
                visible, user_id FROM lkbooks WHERE author LIKE :query")
@@ -176,7 +167,6 @@ def search_author():
 def search_title():
     ''' Searching books by title '''
     current_user = users.user_id()
-    print("current_user:", current_user)
     query = request.args["query"]
     sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
                visible, user_id FROM lkbooks WHERE title LIKE :query")
@@ -202,6 +192,7 @@ def get_stats():
     current_user = users.user_id()
     result_books = db.session.execute(text("SELECT * FROM lkbooks"))
     db_books = result_books.fetchall()
+    # upper part of the statistics page with my books
     my_books = {}
     for book in db_books:
         if current_user != book.user_id:
@@ -209,9 +200,10 @@ def get_stats():
         if book.title not in my_books:
             my_books[book.title] = {}
         my_books[book.title]["author"] = book.author
+    # lower part of the statistics page with all books
     all_books = {}
     for book in db_books:
-        if book.visible == False:
+        if book.visible is False:
             continue
         if book.title not in all_books:
             all_books[book.title] = {"readers": "", "readers_count": 0,
