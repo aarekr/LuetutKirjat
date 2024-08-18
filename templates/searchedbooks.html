@@ -1,30 +1,35 @@
-<h3>Haetut kirjat</h3>
+<h2>Haetut kirjat</h2>
 
 {% if count == 0 %}
-    <p>Kirjailjan kirjoja ei löytynyt.</p>
+    <br>
+    <p>Kirjoja ei löytynyt.</p>
 {% else %}
-    <p>Kirjailja: {{ searched_books[0].author }}</p>
-
     <table border="1">
         <tr>
             <th>Nimeke</th>
+            <th>Kirjailja</th>
             <th>Status</th>
             <th>Kieli</th>
             <th>Tähtiä</th>
         </tr>
-        {% for book in searched_books %}
+        {% for key, value in searched_books.items() %}
             <tr>
-                <td>{{ book.title }}</td>
-                <td>{% if book.reading_completed == True %} Luettu
-                    {% elif book.reading_started == True %} Aloitettu
-                    {% elif book.reading_started == False and book.reading_completed == False %} Ei aloitettu 
+                <td>{{ key[0] }}</td>
+                <td>{{ key[1] }}</td>
+                <td>{% if value.reading_completed == True %} Luettu
+                    {% elif value.reading_started == True %} Aloitettu
+                    {% elif value.reading_started == False and value.reading_completed == False %} Ei aloitettu 
                     {% endif %}</td>
-                <td>{{ book.book_language }}</td>
-                <td align="center">{% if book.stars > 0 %} {{ book.stars }} {% endif %}</td>
+                <td>{{ value.book_language }}</td>
+                <td align="center">{% if value.stars > 0 %} {{ value.stars }} {% endif %}</td>
             </tr>
         {% endfor %}
     </table>
+    
 {% endif %}
 <hr>
+<br>
+<a href="/searchbook">Hae uudestaan</a>
+<br>
 <br>
 <a href="/">Palaa etusivulle</a>

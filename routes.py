@@ -162,11 +162,36 @@ def search_book():
 def search_author():
     ''' Searching books by author '''
     query = request.args["query"]
+    current_user = users.user_id()
     # handle uppercase and lowercase
-    sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars \
-                FROM lkbooks WHERE author LIKE :query")
+    sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
+               visible, user_id FROM lkbooks WHERE author LIKE :query")
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     searched_books = result.fetchall()
+    count=len(searched_books)
+    return render_template("searchedbooks.html", searched_books=searched_books, count=count)
+
+# searching a book by title
+@app.route("/searchtitle")
+def search_title():
+    ''' Searching books by title '''
+    current_user = users.user_id()
+    print("current_user:", current_user)
+    query = request.args["query"]
+    sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
+               visible, user_id FROM lkbooks WHERE title LIKE :query")
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    all_books = result.fetchall()
+    searched_books = {}
+    for book in all_books:
+        if book.user_id != current_user:
+            continue
+        if book.title not in searched_books:
+            searched_books[(book.title, book.author)] = {
+                "reading_started": book.reading_started,
+                "reading_completed": book.reading_completed,
+                "book_language": book.book_language,
+                "stars": book.stars}
     count=len(searched_books)
     return render_template("searchedbooks.html", searched_books=searched_books, count=count)
 
