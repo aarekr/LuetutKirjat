@@ -6,11 +6,13 @@
     <tr>
         <th>Nimeke</th>
         <th>Kirjailja</th>
+        <th>Tähdet</th>
     </tr>
     {% for key, value in my_books.items() %}
         <tr>
-            <td>{{ key }}</td>
-            <td>{{ value.author }}</td>
+            <td>{{ key[0] }}</td>
+            <td>{{ key[1] }}</td>
+            <td align="center">{{ value.stars }}</td>
         </tr>
     {% endfor %}
 </table>
@@ -25,8 +27,8 @@
     </tr>
     {% for key, value in all_books.items() %}
             <tr>
-                <td>{{ key }}</td>
-                <td>{{ value.author }}</td>
+                <td>{{ key[0] }}</td>
+                <td>{{ key[1] }}</td>
                 <td>{{ value.readers_count }} kpl: {{ value.readers }}</td>
                 <td align="right">{{ value.average_rating }}</td>
             </tr>

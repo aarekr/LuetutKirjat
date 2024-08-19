@@ -24,7 +24,7 @@ def check_username_and_passwords(username, password_1, password_2):
         return "Salasanan on oltava 3-20 merkin pituinen"
     if password_1 != password_2:
         return "Salasanat eroavat"
-    return "Password OK"
+    return "Credentials OK"
 
 def login(username, password):
     ''' User login '''
@@ -43,10 +43,10 @@ def user_id():
     ''' User session id '''
     return session.get("user_id", 0)
 
-def user_name(searched_id):
+def user_name(id):
     ''' User name by id '''
-    sql = text("SELECT id, username FROM lkusers WHERE id=:searched_id")
-    result = db.session.execute(sql, {"id":searched_id})
+    sql = text("SELECT id, username FROM lkusers WHERE id=:id")
+    result = db.session.execute(sql, {"id":id})
     user = result.fetchone()
     return user[1]
 

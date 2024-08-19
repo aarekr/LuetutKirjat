@@ -26,7 +26,7 @@ def register():
         password_1 = request.form["password_1"]
         password_2 = request.form["password_2"]
         message = users.check_username_and_passwords(username, password_1, password_2)
-        if message != "Password OK":
+        if message != "Credentials OK":
             return render_template("error.html", return_to_page="registration", message=message)
         if users.register(username, password_1):
             return redirect("/")
@@ -198,29 +198,28 @@ def get_stats():
         if current_user != book.user_id:
             continue
         if book.title not in my_books:
-            my_books[book.title] = {}
-        my_books[book.title]["author"] = book.author
+            my_books[(book.title, book.author)] = {"stars":book.stars}
     # lower part of the statistics page with all books
     all_books = {}
     for book in db_books:
         if book.visible is False:
             continue
         if book.title not in all_books:
-            all_books[book.title] = {"readers": "", "readers_count": 0,
+            all_books[(book.title, book.author)] = {"readers": "", "readers_count": 0,
                                      "stars_total": 0, "ratings_total": 0, "average_rating": 0}
-            all_books[book.title]["author"] = book.author
-        if len(all_books[book.title]["readers"]) == 0:
-            all_books[book.title]["readers"] += users.user_name(book.user_id)
+            #all_books[book.title]["author"] = book.author
+        if len(all_books[(book.title, book.author)]["readers"]) == 0:
+            all_books[(book.title, book.author)]["readers"] += users.user_name(book.user_id)
         else:
-            all_books[book.title]["readers"] += ", " + users.user_name(book.user_id)
-        all_books[book.title]["readers_count"] += 1
+            all_books[(book.title, book.author)]["readers"] += ", " + users.user_name(book.user_id)
+        all_books[(book.title, book.author)]["readers_count"] += 1
         if book.stars > 0:
-            print("book.stars:", book.stars)
-            all_books[book.title]["stars_total"] += book.stars
-            all_books[book.title]["ratings_total"] += 1
-        if all_books[book.title]["ratings_total"] != 0:
-            all_books[book.title]["average_rating"] = \
-                "{:.2f}".format(all_books[book.title]["stars_total"] / 
-                                all_books[book.title]["ratings_total"])
+            all_books[(book.title, book.author)]["stars_total"] += book.stars
+            all_books[(book.title, book.author)]["ratings_total"] += 1
+        if all_books[(book.title, book.author)]["ratings_total"] != 0:
+            all_books[(book.title, book.author)]["average_rating"] = \
+                "{:.2f}".format(all_books[(book.title, book.author)]["stars_total"] / 
+                                all_books[(book.title, book.author)]["ratings_total"])
+        print("valmis kirja:", book.title, book.author, all_books[(book.title, book.author)])
     return render_template("statistics.html", my_books=my_books, all_books=all_books,
                            current_user=current_user)
