@@ -1,3 +1,7 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
 <h2>Kirjojen haku</h2>
 <p>(omista kirjoista)</p>
 <br>
@@ -6,12 +10,14 @@
     Hae kirjailijaa: 
     <input type="text" name="query"><input type="submit" value="Hae">
 </form>
-
+<br>
 <form action="/searchtitle" method="GET">
     Hae kirjaa: 
     <input type="text" name="query"><input type="submit" value="Hae">
 </form>
 
 <hr>
-<br>
 <a href="/">Palaa etusivulle</a>
+<br>
+
+{% endblock %}

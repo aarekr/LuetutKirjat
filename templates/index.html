@@ -1,96 +1,62 @@
-<!doctype html>
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<title>Luetut kirjat</title>
+{% extends "layout.html" %}
 
-{% if session.username %}
-  <div class="container">
-    <nav class="navbar navbar-expand-sm navbar-light">
-      <a class="navbar-brand">Hei, {{ session.username }}</a>
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Etusivu</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/addbook">Lisää kirja</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/searchbook">Hae kirjaa</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/statistics">Lukutilastot</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Kirjaudu ulos</a>
-        </li>
+{% block body %}
+
+<div class="row">
+    <div class="col-5">
+      <h5>Lukeminen aloitettu</h5>
+      <ul>
+        {% for book in db_books %}
+          {% if book.reading_started == True %}
+            <li>
+              <form action="/bookcompleted/{{ book.id }}" method="POST">
+                <input type="submit" value="Luettu"> {{ book.title }}, {{ book.author }}
+                <input type="hidden" name="id" value="{{ book.id }}">
+              </form>
+            </li>
+          {% endif %}
+        {% endfor %}
       </ul>
-    </nav>
-    <hr>
-
-    <div class="row">
-      <div class="col-5">
-        <h5>Lukeminen aloitettu</h5>
-        <ul>
-          {% for book in db_books %}
-            {% if book.reading_started == True %}
-              <li>
-                <form action="/bookcompleted/{{ book.id }}" method="POST">
-                  <input type="submit" value="Luettu"> {{ book.title }}, {{ book.author }}
-                  <input type="hidden" name="id" value="{{ book.id }}">
-                </form>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-        <hr>
-        <h5>Lukematta</h5>
-        <ol>
-          {% for book in db_books %}
-            {% if book.reading_started == False and book.reading_completed == False %}
-              <li>
-                <form action="/bookstarted/{{ book.id }}" method="POST">
-                  <input type="submit" value="Aloita"> {{ book.title }}, {{ book.author }}
-                  <input type="hidden" name="id" value="{{ book.id }}">
-                </form>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ol>
-        <hr>
-        <a href="/addbook">Lisää uusi kirja luettaviin</a>
-      </div>
-      <div class="col-7">
-        <h5>Luetut kirjat</h5>
-        <ol type="1">
-          {% for book in db_books %}
-            {% if book.reading_completed == True and book.visible == True %}
-              <li>
-                <form action="/bookinfo/{{ book.id }}" method="GET">
-                  <input type="submit" value="Info"> {{ book.title }}, {{ book.author }} ( {{ book.book_language }},
-                                                      {% if book.stars > 1 %}
-                                                        {{ book.stars }} tähteä
-                                                      {% elif book.stars == 1 %}
-                                                        {{ book.stars }} tähti
-                                                      {% else %}
-                                                        ei arvosteltu
-                                                      {% endif %})
-                  <input type="hidden" name="id" value="{{ book.id }}">
-                </form>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ol>
-      </div>
+      <hr>
+      <h5>Lukematta</h5>
+      <ol>
+        {% for book in db_books %}
+          {% if book.reading_started == False and book.reading_completed == False %}
+            <li>
+              <form action="/bookstarted/{{ book.id }}" method="POST">
+                <input type="submit" value="Aloita"> {{ book.title }}, {{ book.author }}
+                <input type="hidden" name="id" value="{{ book.id }}">
+              </form>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+      <hr>
+      <a href="/addbook">Lisää uusi kirja luettaviin</a>
+    </div>
+    <div class="col-7">
+      <h5>Luetut kirjat</h5>
+      <ol type="1">
+        {% for book in db_books %}
+          {% if book.reading_completed == True and book.visible == True %}
+            <li>
+              <form action="/bookinfo/{{ book.id }}" method="GET">
+                <input type="submit" value="Info"> {{ book.title }}, {{ book.author }} ( {{ book.book_language }},
+                                                    {% if book.stars > 1 %}
+                                                      {{ book.stars }} tähteä
+                                                    {% elif book.stars == 1 %}
+                                                      {{ book.stars }} tähti
+                                                    {% else %}
+                                                      ei arvosteltu
+                                                    {% endif %})
+                <input type="hidden" name="id" value="{{ book.id }}">
+              </form>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
     </div>
   </div>
-  {% else %}
-  <form action="/login" method="POST">
-    <p>Tunnus:<br>
-    <input type="text" name="username"></p>
-    <p>Salasana:<br>
-    <input type="password" name="password"></p>
-    <input type="submit" value="Kirjaudu sisään">
-  </form>
-  <br>
-  <p>Jos sinulla ei ole tunnusta, voit luoda sen <a href="/register">täällä</a></p>
-{% endif %}
+</div>
+
+{% endblock %}

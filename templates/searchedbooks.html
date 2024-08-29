@@ -1,3 +1,7 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
 <h2>Haetut kirjat</h2>
 
 {% if count == 0 %}
@@ -31,3 +35,5 @@
 <a href="/searchbook">Hae uudestaan</a>
 <br><br>
 <a href="/">Palaa etusivulle</a>
+
+{% endblock %}
