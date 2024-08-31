@@ -153,12 +153,25 @@ def search_book():
 @app.route("/searchauthor")
 def search_author():
     ''' Searching books by author '''
+    current_user = users.user_id()
     query = request.args["query"]
     # handle uppercase and lowercase
     sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
                visible, user_id FROM lkbooks WHERE author LIKE :query")
     result = db.session.execute(sql, {"query":"%"+query+"%"})
-    searched_books = result.fetchall()
+    db_books = result.fetchall()
+    searched_books = {}
+    for book in db_books:
+        if book.visible is False:
+            continue
+        if book.user_id != current_user:
+            continue
+        if book.title not in searched_books:
+            searched_books[(book.title, book.author)] = {
+                "reading_started": book.reading_started,
+                "reading_completed": book.reading_completed,
+                "book_language": book.book_language,
+                "stars": book.stars}
     count=len(searched_books)
     return render_template("searchedbooks.html", searched_books=searched_books, count=count)
 
@@ -171,9 +184,11 @@ def search_title():
     sql = text("SELECT title, author, reading_started, reading_completed, book_language, stars, \
                visible, user_id FROM lkbooks WHERE title LIKE :query")
     result = db.session.execute(sql, {"query":"%"+query+"%"})
-    all_books = result.fetchall()
+    db_books = result.fetchall()
     searched_books = {}
-    for book in all_books:
+    for book in db_books:
+        if book.visible is False:
+            continue
         if book.user_id != current_user:
             continue
         if book.title not in searched_books:
@@ -197,29 +212,29 @@ def get_stats():
     for book in db_books:
         if current_user != book.user_id:
             continue
-        if book.title not in my_books:
+        if book.title not in my_books and book.reading_completed is True and book.visible is True:
             my_books[(book.title, book.author)] = {"stars":book.stars}
+    my_completed_books = len(my_books)
     # lower part of the statistics page with all books
     all_books = {}
     for book in db_books:
         if book.visible is False:
             continue
+        if book.reading_completed is False:
+            continue
         if book.title not in all_books:
-            all_books[(book.title, book.author)] = {"readers": "", "readers_count": 0,
+            all_books[book.title] = {"author": book.author, "readers": "ei lukijoita", "readers_count": 0,
                                      "stars_total": 0, "ratings_total": 0, "average_rating": 0}
-            #all_books[book.title]["author"] = book.author
-        if len(all_books[(book.title, book.author)]["readers"]) == 0:
-            all_books[(book.title, book.author)]["readers"] += users.user_name(book.user_id)
+        if all_books[book.title]["readers"] == "ei lukijoita":
+            all_books[book.title]["readers"] = users.user_name(book.user_id)
         else:
-            all_books[(book.title, book.author)]["readers"] += ", " + users.user_name(book.user_id)
-        all_books[(book.title, book.author)]["readers_count"] += 1
+            all_books[book.title]["readers"] += ", " + users.user_name(book.user_id)
+        all_books[book.title]["readers_count"] += 1
         if book.stars > 0:
-            all_books[(book.title, book.author)]["stars_total"] += book.stars
-            all_books[(book.title, book.author)]["ratings_total"] += 1
-        if all_books[(book.title, book.author)]["ratings_total"] != 0:
-            all_books[(book.title, book.author)]["average_rating"] = \
-                "{:.2f}".format(all_books[(book.title, book.author)]["stars_total"] / 
-                                all_books[(book.title, book.author)]["ratings_total"])
-        print("valmis kirja:", book.title, book.author, all_books[(book.title, book.author)])
-    return render_template("statistics.html", my_books=my_books, all_books=all_books,
-                           current_user=current_user)
+            all_books[book.title]["stars_total"] += book.stars
+            all_books[book.title]["ratings_total"] += 1
+            all_books[book.title]["average_rating"] = \
+                "{:.2f}".format(all_books[book.title]["stars_total"] / 
+                                all_books[book.title]["ratings_total"])
+    return render_template("statistics.html", all_books=all_books, current_user=current_user,
+                           my_books=my_books, my_completed_books=my_completed_books)

@@ -5,7 +5,7 @@
 <h2>Tilastot</h2>
 <hr>
 
-<h4>Minun luetut kirjat</h4>
+<h4>Minun luetut kirjat ({{ my_completed_books }} kpl)</h4>
 <table border="1">
     <tr>
         <th>Nimeke</th>
@@ -20,7 +20,9 @@
         </tr>
     {% endfor %}
 </table>
+<br>
 
+<!-- Completed books by all readers -->
 <h4>Kaikki kirjat</h4>
 <table border="1">
     <tr>
@@ -29,18 +31,17 @@
         <th>Lukijat</th>
         <th>Tähdet</th>
     </tr>
-    {% for key, value in all_books.items() %}
+    {% for title, data in all_books.items() %}
             <tr>
-                <td>{{ key[0] }}</td>
-                <td>{{ key[1] }}</td>
-                <td>{{ value.readers_count }} kpl: {{ value.readers }}</td>
-                <td align="right">{{ value.average_rating }}</td>
+                <td>{{ title }}</td>
+                <td>{{ data.author }}</td>
+                <td>{{ data.readers_count }} kpl: {{ data.readers }}</td>
+                <td align="right">{{ data.average_rating }}</td>
             </tr>
     {% endfor %}
 </table>
-
 <hr>
-<br>
 <a href="/">Palaa etusivulle</a>
+<br>
 
 {% endblock %}

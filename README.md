@@ -9,14 +9,33 @@ Sovellus, johon voi merkata tällä hetkellä luettavat, lukulistalla olevat ja 
 
 ## Asentaminen
 * Kloonaa repositorio
+* Mene juurihakemistoon
+* Luo virtuaaliympäristö:
+```bash
+python3 -m venv venv
+```
+* Aktivoi virtuaaliympäristö:
+```bash
+source venv/bin/activate
+```
 * Asenna riippuvuudet:
 ```bash
 pip install -r requirements.txt
 ```
+* Luo .env-tiedosto ja lisää sinne PostgreSQL-tietokannan osoite ja salainen avain:
+- DATABASE_URL="..."
+- SECRET_KEY=...
 
 ## Käynnistäminen
+```bash
+flask run
+```
 
 ## Testit
+* Robot-testit (juurihakemistossa):
+```bash
+robot src/tests
+```
 
 ## Pylint
 Syötä komento ja tiedoston nimi, esim.:

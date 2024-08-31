@@ -8,24 +8,25 @@
     <br>
     <p>Kirjoja ei löytynyt.</p>
 {% else %}
-    <table border="1">
+    <table border="1"  style="width:600px">
         <tr>
             <th>Nimeke</th>
             <th>Kirjailja</th>
             <th>Status</th>
             <th>Kieli</th>
-            <th>Tähtiä</th>
+            <th align="center">Tähtiä</th>
         </tr>
-        {% for key, value in searched_books.items() %}
+        {% for key, data in searched_books.items() %}
             <tr>
                 <td>{{ key[0] }}</td>
                 <td>{{ key[1] }}</td>
-                <td>{% if value.reading_completed == True %} Luettu
-                    {% elif value.reading_started == True %} Aloitettu
-                    {% elif value.reading_started == False and value.reading_completed == False %} Ei aloitettu 
-                    {% endif %}</td>
-                <td>{{ value.book_language }}</td>
-                <td align="center">{% if value.stars > 0 %} {{ value.stars }} {% endif %}</td>
+                <td>{% if data.reading_started %}Aloitettu
+                    {% elif data.reading_completed %}Luettu
+                    {% else %}Ei aloitettu
+                    {% endif %}
+                </td>
+                <td>{{ data.book_language }}</td>
+                <td align="center">{{ data.stars }}</td>
             </tr>
         {% endfor %}
     </table>
