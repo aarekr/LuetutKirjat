@@ -74,6 +74,12 @@ def book_added():
     book_language = request.form["book_language"]
     stars = 0
     visible = True
+    # checking previously added books
+    result_books = db.session.execute(text("SELECT * FROM lkbooks"))
+    db_books = result_books.fetchall()
+    for book in db_books:
+        if book[1] == title and book[2] == author and book[8] == user_id:
+            return render_template("bookalreadyadded.html", title=title, author=author)
     sql = text("INSERT INTO lkbooks (title, author, reading_started, reading_completed, \
                book_language, stars, visible, user_id) VALUES (:title, :author, :reading_started, \
                :reading_completed, :book_language, :stars, :visible, :user_id)")

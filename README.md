@@ -23,10 +23,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 * Luo .env-tiedosto ja lisää sinne PostgreSQL-tietokannan osoite ja salainen avain:
-- DATABASE_URL="..."
-- SECRET_KEY=...
+
+DATABASE_URL="..."
+
+SECRET_KEY=...
 
 ## Käynnistäminen
+* Syötä juurihakemistossa komento:
 ```bash
 flask run
 ```
