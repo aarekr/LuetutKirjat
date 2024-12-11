@@ -39,12 +39,11 @@ def login():
     ''' User login '''
     if request.method == "GET":
         return render_template("login.html")
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        if users.login(username, password):
-            return redirect("/")
-        return render_template("error.html", message="Väärä tunnus tai salasana")
+    username = request.form["username"]
+    password = request.form["password"]
+    if users.login(username, password):
+        return redirect("/")
+    return render_template("error.html", message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
@@ -229,8 +228,9 @@ def get_stats():
         if book.reading_completed is False:
             continue
         if book.title not in all_books:
-            all_books[book.title] = {"author": book.author, "readers": "ei lukijoita", "readers_count": 0,
-                                     "stars_total": 0, "ratings_total": 0, "average_rating": 0}
+            all_books[book.title] = {"author": book.author, "readers": "ei lukijoita",
+                                     "readers_count": 0, "stars_total": 0,
+                                     "ratings_total": 0, "average_rating": 0}
         if all_books[book.title]["readers"] == "ei lukijoita":
             all_books[book.title]["readers"] = users.user_name(book.user_id)
         else:

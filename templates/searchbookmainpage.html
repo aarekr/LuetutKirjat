@@ -6,15 +6,20 @@
 <p>(omista kirjoista)</p>
 <br>
 
-<form action="/searchauthor" method="GET">
-    Hae kirjailijaa: 
-    <input type="text" name="query"><input type="submit" value="Hae">
-</form>
-<br>
-<form action="/searchtitle" method="GET">
-    Hae kirjaa: 
-    <input type="text" name="query"><input type="submit" value="Hae">
-</form>
+<table>
+    <tr>
+        <form action="/searchauthor" method="GET">
+            <td>Hae kirjailijaa: </td>
+            <td><input type="text" name="query"> <input type="submit" value="Hae"></td>
+        </form>
+    </tr>
+    <tr>
+        <form action="/searchtitle" method="GET">
+            <td>Hae kirjaa: </td>
+            <td><input type="text" name="query"> <input type="submit" value="Hae"></td>
+        </form>
+    </tr>
+</table>
 
 <hr>
 <a href="/">Palaa etusivulle</a>
